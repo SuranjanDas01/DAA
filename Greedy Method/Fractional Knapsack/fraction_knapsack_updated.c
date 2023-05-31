@@ -8,18 +8,28 @@ struct Item {
     int weight;
 };
 
-// compare function for sorting items by decreasing value-to-weight ratio
-int cmp(const void *a, const void *b) {
-    const struct Item *itemA = (const struct Item *) a;
-    const struct Item *itemB = (const struct Item *) b;
-    double ratioA = (double) itemA->value / itemA->weight;
-    double ratioB = (double) itemB->value / itemB->weight;
-    return (ratioB > ratioA) - (ratioB < ratioA);
+//sorting function
+void sort(struct Item items[],int n){
+    for(int i=0;i<n;i++){
+        for(int j=i+1;j<n;j++){
+            double ratioA=items[i].value/items[i].weight;
+            double ratioB=items[j].value/items[j].weight;
+            if(ratioB>ratioA){
+                double temp=items[i].value;
+                items[i].value=items[j].value;
+                items[j].value=temp;
+
+                temp=items[i].weight;
+                items[i].weight=items[j].weight;
+                items[j].weight=temp;
+            }
+        }
+    }
 }
 
 // function to solve the fractional knapsack problem
 void fractionalKnapsack(struct Item items[], int n, int capacity, int *total_value, struct Item knapsack[]) {
-    qsort(items, n, sizeof(struct Item), cmp);
+    sort(items, n);
     *total_value = 0;
     int knapsack_size = 0;
     for (int i = 0; i < n; i++) {
@@ -38,7 +48,7 @@ void fractionalKnapsack(struct Item items[], int n, int capacity, int *total_val
 }
 
 int main() {
-    struct Item items[] = {{60, 10}, {100, 20}, {120, 30}, {140,20}};
+    struct Item items[] = {{60, 10}, {100, 20}, {120, 30},{140,20}};
     int n = sizeof(items) / sizeof(items[0]);
     int capacity = 50;
     struct Item knapsack[n];
